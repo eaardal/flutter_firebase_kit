@@ -1,0 +1,90 @@
+import 'dart:async';
+
+import 'package:flex/home/home_screen.dart';
+import 'package:flex/infrastructure/bloc.dart';
+import 'package:flex/infrastructure/di.dart';
+import 'package:flex/routes.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
+
+import 'theme/app_theme.dart';
+
+class App {
+  static const String name = "Flex";
+
+  String _title;
+  Environment _environment;
+  bool get isDevelopment => _environment == Environment.development;
+
+  App({
+    required String title,
+    required Environment environment,
+  })  : this._title = title,
+        this._environment = environment;
+
+  Future<void> run() async {
+    runZonedGuarded(() async {
+      FlutterError.onError = _onFlutterError;
+      await _init();
+      runApp(_createApp());
+    }, _onDartError);
+  }
+
+  Future<void> _init() async {
+    WidgetsFlutterBinding.ensureInitialized();
+  }
+
+  Widget _createApp() {
+    var di = DI();
+    return MultiProvider(
+      providers: [
+        Provider.value(value: BlocFactory(di)),
+        Provider.value(value: di.logger),
+      ],
+      child: FlexApp(_title),
+    );
+  }
+
+  void _onDartError(Object error, StackTrace stackTrace) {
+    if (isDevelopment) {
+      print(error);
+      print(stackTrace);
+    } else {
+      // TODO: Production error reporting system
+    }
+  }
+
+  void _onFlutterError(FlutterErrorDetails error) {
+    if (isDevelopment) {
+      FlutterError.dumpErrorToConsole(error);
+    } else {
+      Zone.current.handleUncaughtError(error.exception, error.stack!);
+      // TODO: Production error reporting system
+    }
+  }
+}
+
+class FlexApp extends StatelessWidget {
+  final String _title;
+
+  FlexApp(this._title);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: _title,
+      theme: AppTheme.current,
+      routes: Routes.registry(),
+      home: HomeScreen(),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+    );
+  }
+}
+
+enum Environment {
+  development,
+  staging,
+  production,
+}

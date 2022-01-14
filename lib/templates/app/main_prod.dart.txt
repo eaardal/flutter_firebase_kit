@@ -1,0 +1,9 @@
+import 'package:flex/app.dart';
+
+Future<void> main() async {
+  var app = App(
+    title: App.name,
+    environment: Environment.production,
+  );
+  app.run();
+}
