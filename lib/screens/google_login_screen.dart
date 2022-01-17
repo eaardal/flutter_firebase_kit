@@ -4,16 +4,32 @@ import 'package:flutter_firebase_kit/infrastructure/bloc.dart';
 import 'package:flutter_firebase_kit/services/session.dart';
 
 class GoogleLoginScreen extends StatelessWidget {
+  final String logInButtonText;
+
+  const GoogleLoginScreen({
+    Key? key,
+    required this.logInButtonText,
+  }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider<GoogleLoginScreenBloc>(
       bloc: context.createBloc<GoogleLoginScreenBloc>(),
-      child: _GoogleLoginScreen(),
+      child: _GoogleLoginScreen(
+        logInButtonText: this.logInButtonText,
+      ),
     );
   }
 }
 
 class _GoogleLoginScreen extends StatefulWidget {
+  final String logInButtonText;
+
+  const _GoogleLoginScreen({
+    Key? key,
+    required this.logInButtonText,
+  }) : super(key: key);
+
   @override
   _GoogleLoginScreenState createState() => _GoogleLoginScreenState();
 }
@@ -25,7 +41,7 @@ class _GoogleLoginScreenState extends State<_GoogleLoginScreen> {
   Widget build(BuildContext context) {
     var bloc = context.getBloc<GoogleLoginScreenBloc>();
     Widget body = OutlinedButton(
-      child: Text("Log in with Google"),
+      child: Text(widget.logInButtonText),
       onPressed: () async {
         setState(() {
           isLoggingIn = true;

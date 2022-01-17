@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_firebase_kit/widgets/ui.dart';
+import 'package:flutter_firebase_kit/infrastructure/ui.dart';
 
 typedef Widget BuildWidgetWithUI<T extends UI>(
-    BuildContext context, AsyncSnapshot<T> snapshot, T ui);
+  BuildContext context,
+  AsyncSnapshot<T> snapshot,
+  T ui,
+);
 
 class StreamBuilderUI<T extends UI> extends StatelessWidget {
   final BuildWidgetWithUI<T>? none;

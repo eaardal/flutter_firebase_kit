@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_firebase_kit/widgets/stream_builder_ui.dart';
-import 'package:flutter_firebase_kit/widgets/ui.dart';
+import 'package:flutter_firebase_kit/widgets/builders/stream_builder_ui.dart';
+import 'package:flutter_firebase_kit/infrastructure/ui.dart';
 
 class FutureBuilderUI<T extends UI> extends StatelessWidget {
   final BuildWidgetWithUI<T>? none;

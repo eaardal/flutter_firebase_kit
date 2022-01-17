@@ -5,7 +5,7 @@ enum Environment {
 }
 
 class Config {
-  static const String appName = "ChopShop";
+  static const String appName = "MyApp";
 
   String appTitle;
   Environment environment;
@@ -23,7 +23,11 @@ class Config {
 }
 
 class FirebaseConfig {
-  bool useEmulator;
+  bool? useEmulator;
+  int? emulatorPort;
 
-  FirebaseConfig({required this.useEmulator});
+  FirebaseConfig({
+    this.useEmulator,
+    this.emulatorPort,
+  });
 }

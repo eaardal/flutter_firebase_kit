@@ -3,10 +3,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 
 abstract class Bloc {
-  void dispose();
   Stream<T> mergeStreams<T>(Iterable<Stream<T>> streams) {
     return StreamGroup.merge(streams);
   }
+
+  void dispose();
 }
 
 class BlocProvider<T extends Bloc> extends StatefulWidget {

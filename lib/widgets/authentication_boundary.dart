@@ -55,8 +55,4 @@ class AuthenticationBoundaryBloc extends Bloc {
 
   @override
   void dispose() {}
-
-  Future<void> logIn() async {
-    await _session.logIn();
-  }
 }
