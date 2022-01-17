@@ -56,8 +56,17 @@ class FirebaseAdmin extends Firebase {
     }
   }
 
-  static init() async {
+  static init({bool? useEmulator, int? port}) async {
     await Sdk.Firebase.initializeApp();
+
+    if (useEmulator != null && useEmulator) {
+      if (port == null || port == 0) {
+        throw new Exception(
+            "Failed to start firebase emulator: useEmulator=true but no port was provided");
+      }
+
+      useLocalEmulator(port);
+    }
   }
 
   static void useLocalEmulator(int port) {

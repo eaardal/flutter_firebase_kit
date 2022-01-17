@@ -1,0 +1,116 @@
+import 'dart:async';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mosh/mocks/user_mock_data.dart';
+import 'package:mosh/models/firestore/v1/document_meta.dart';
+import 'package:mosh/models/firestore/v1/user_document.dart';
+
+abstract class UserRepository {
+  Stream<UserDocument> streamUser(String userId);
+  Future<void> createUser(
+    String userId,
+    String name,
+    String email,
+    String? pictureUrl,
+  );
+  Future<UserDocument> getUser(String userId);
+  Future<bool> userExists(String userId);
+  void dispose();
+}
+
+class FirestoreUserRepository with UserRepository {
+  FirebaseFirestore _firestore;
+
+  FirestoreUserRepository(this._firestore);
+
+  @override
+  Stream<UserDocument> streamUser(String userId) {
+    return _getUserRef(userId).snapshots().map((doc) {
+      var data = doc.data();
+      return UserDocument.fromSnapshotData(data!);
+    });
+  }
+
+  @override
+  Future<UserDocument> getUser(String userId) async {
+    var userDoc = await _getUserRef(userId).get();
+    var data = userDoc.data();
+    return UserDocument.fromSnapshotData(data!);
+  }
+
+  Future<void> createUser(
+    String userId,
+    String name,
+    String email,
+    String? pictureUrl,
+  ) async {
+    var userRef = _getUserRef(userId);
+
+    var user = UserDocument(
+      meta: DocumentMeta(
+        documentId: userId,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+        documentReference: userRef,
+        schemaId: UserDocument.schemaId,
+        schemaVersion: UserDocument.schemaVersion,
+      ),
+      name: name,
+      email: email,
+      pictureUrl: pictureUrl,
+    );
+
+    await userRef.set(user.toMap());
+  }
+
+  Future<bool> userExists(String userId) async {
+    try {
+      var doc = await _getUserRef(userId).get();
+      return doc.exists;
+    } on Exception catch (_) {
+      return false;
+    }
+  }
+
+  @override
+  void dispose() {}
+
+  DocumentReference _getUserRef(String userId) {
+    return _firestore.collection("users").doc(userId);
+  }
+}
+
+class MockUserRepository with UserRepository {
+  UserMockData _mockData;
+
+  MockUserRepository(this._mockData);
+
+  @override
+  Stream<UserDocument> streamUser(String userId) {
+    return _mockData.user;
+  }
+
+  @override
+  Future<void> createUser(
+    String userId,
+    String name,
+    String email,
+    String? pictureUrl,
+  ) async {}
+
+  @override
+  Future<bool> userExists(String userId) async {
+    return true;
+  }
+
+  @override
+  void dispose() {
+    _mockData.dispose();
+  }
+
+  @override
+  Future<UserDocument> getUser(String userId) {
+    // TODO: implement getUser
+    throw UnimplementedError();
+  }
+}

@@ -1,0 +1,30 @@
+import 'package:chopshop/shopping_lists/shopping_list_repository.dart';
+import 'package:chopshop/shopping_lists/shopping_lists_screen_bloc.dart';
+import 'package:flutter_firebase_kit/infrastructure/logger.dart';
+
+class DI {
+  late Logger _logger;
+  Logger get logger => _logger;
+
+  late ShoppingListRepository _shoppingListRepository;
+  ShoppingListRepository get shoppingListRepository => _shoppingListRepository;
+
+  Map<Type, Function> get blocCreators => {
+        ShoppingListsScreenBloc: () =>
+            ShoppingListsScreenBloc(this.shoppingListRepository),
+        // Add more blocs here...
+      };
+
+  DI() {
+    _logger = SimpleLogger();
+    _shoppingListRepository = ShoppingListFirestoreRepository();
+  }
+
+  DI.withMocks() {
+    _logger = SimpleLogger();
+  }
+
+  DI.withFirebaseEmulator() {
+    _logger = SimpleLogger();
+  }
+}

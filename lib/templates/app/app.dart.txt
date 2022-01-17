@@ -1,17 +1,17 @@
 import 'dart:async';
 
-import 'package:flex/home/home_screen.dart';
-import 'package:flex/infrastructure/bloc.dart';
-import 'package:flex/infrastructure/di.dart';
-import 'package:flex/routes.dart';
+import 'package:chopshop/di.dart';
+import 'package:chopshop/localization.dart';
+import 'package:chopshop/routes.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_firebase_kit/infrastructure/bloc.dart';
+import 'package:flutter_firebase_kit/theme/app_theme.dart';
 import 'package:provider/provider.dart';
 
-import 'theme/app_theme.dart';
+import 'home/home_screen.dart';
 
 class App {
-  static const String name = "Flex";
+  static const String name = "ChopShop";
 
   String _title;
   Environment _environment;
@@ -39,10 +39,10 @@ class App {
     var di = DI();
     return MultiProvider(
       providers: [
-        Provider.value(value: BlocFactory(di)),
+        Provider.value(value: BlocFactory(di.blocCreators)),
         Provider.value(value: di.logger),
       ],
-      child: FlexApp(_title),
+      child: AppRoot(_title),
     );
   }
 
@@ -65,10 +65,10 @@ class App {
   }
 }
 
-class FlexApp extends StatelessWidget {
+class AppRoot extends StatelessWidget {
   final String _title;
 
-  FlexApp(this._title);
+  AppRoot(this._title);
 
   @override
   Widget build(BuildContext context) {
@@ -77,14 +77,8 @@ class FlexApp extends StatelessWidget {
       theme: AppTheme.current,
       routes: Routes.registry(),
       home: HomeScreen(),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
+      localizationsDelegates: Localization.localizationsDelegates,
+      supportedLocales: Localization.supportedLocales,
     );
   }
-}
-
-enum Environment {
-  development,
-  staging,
-  production,
 }

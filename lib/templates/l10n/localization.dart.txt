@@ -1,0 +1,32 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+// Mirror all available localizations in flutter_gen/gen_l10n/app_localizations.dart
+// so we don't have to import and depend on the generated file app_localizations.dart.
+// We want to isolate all references to this generated file here to minimize build and debug confusion.
+
+// All available translations, mirroring the generated app_localizations.dart exactly.
+abstract class Translations {
+  String get homeScreen_title;
+  String get shoppingListsScreen_title;
+}
+
+// Provides all translations and abstracts away all other usages of app_localizations.dart
+class Localization extends Translations {
+  final BuildContext _context;
+
+  Localization(this._context);
+
+  static List<LocalizationsDelegate<dynamic>> get localizationsDelegates =>
+      AppLocalizations.localizationsDelegates;
+
+  static List<Locale> get supportedLocales => AppLocalizations.supportedLocales;
+
+  AppLocalizations get _i18n => AppLocalizations.of(_context)!;
+
+  @override
+  String get shoppingListsScreen_title => _i18n.shoppingListsScreen_title;
+
+  @override
+  String get homeScreen_title => _i18n.homeScreen_title;
+}

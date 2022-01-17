@@ -7,7 +7,7 @@ abstract class Logger {
   inspect(Object obj);
 }
 
-class FlexLogger implements Logger {
+class SimpleLogger implements Logger {
   @override
   w(String msg) {
     print(msg);
