@@ -6,7 +6,12 @@ import 'font.dart';
 import 'font_karla.dart';
 
 class AppTheme {
-  static final ThemeData current = DarkBlueTheme.theme();
+  static ThemeData _theme = DarkBlueTheme.theme();
+  static ThemeData get current => _theme;
+
+  static void setTheme(ThemeData theme) {
+    _theme = theme;
+  }
 
   // The default corner radius on cards, buttons and other square UI elements.
   static final double cornerRadius = 20;
