@@ -1,9 +1,14 @@
-import 'package:flex/app.dart';
+import 'package:flutter_firebase_kit/config/config.dart';
+
+import 'app.dart';
 
 Future<void> main() async {
   var app = App(
-    title: "${App.name} Dev",
-    environment: Environment.development,
+    config: Config(
+      appTitle: "${Config.appName} Dev",
+      environment: Environment.development,
+      firebase: FirebaseConfig(useEmulator: false),
+    ),
   );
   app.run();
 }

@@ -1,0 +1,54 @@
+import 'package:flutter/material.dart';
+
+import '../app/routes.dart';
+
+class AppBottomNavigationBar extends StatefulWidget {
+  static const Widget instance = AppBottomNavigationBar._();
+
+  const AppBottomNavigationBar._();
+
+  @override
+  State<AppBottomNavigationBar> createState() => _AppBottomNavigationBarState();
+}
+
+class _AppBottomNavigationBarState extends State<AppBottomNavigationBar> {
+  int activeIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return BottomNavigationBar(
+      unselectedItemColor: Colors.white,
+      selectedItemColor: Colors.lightBlue[200],
+      unselectedLabelStyle: const TextStyle(color: Colors.white),
+      showUnselectedLabels: true,
+      items: const [
+        BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+        BottomNavigationBarItem(icon: Icon(Icons.edit), label: "More"),
+        BottomNavigationBarItem(icon: Icon(Icons.play_arrow), label: "Things"),
+        BottomNavigationBarItem(icon: Icon(Icons.settings), label: "Here"),
+      ],
+      currentIndex: activeIndex,
+      onTap: (index) {
+        setState(() {
+          activeIndex = index;
+        });
+        switch (index) {
+          case 0:
+            Routes.goToHome(context);
+            break;
+          case 1:
+            Routes.goToHome(context);
+            break;
+          case 2:
+            Routes.goToHome(context);
+            break;
+          case 3:
+            Routes.goToHome(context);
+            break;
+          default:
+            throw Exception("No handler for bottom navigation bar item $index");
+        }
+      },
+    );
+  }
+}

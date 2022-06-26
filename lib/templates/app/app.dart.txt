@@ -1,53 +1,66 @@
 import 'dart:async';
 
-import 'package:chopshop/di.dart';
-import 'package:chopshop/localization.dart';
-import 'package:chopshop/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_kit/config/config.dart';
 import 'package:flutter_firebase_kit/infrastructure/bloc.dart';
+import 'package:flutter_firebase_kit/services/firebase.dart';
 import 'package:flutter_firebase_kit/theme/app_theme.dart';
+import 'package:flutter_firebase_kit/theme/dark_blue_theme.dart';
+import 'package:grumble/app/di.dart';
+import 'package:grumble/app/routes.dart';
+import 'package:grumble/l10n/localization.dart';
 import 'package:provider/provider.dart';
 
-import 'home/home_screen.dart';
-
 class App {
-  static const String name = "ChopShop";
-
-  String _title;
-  Environment _environment;
-  bool get isDevelopment => _environment == Environment.development;
+  final Config _config;
 
   App({
-    required String title,
-    required Environment environment,
-  })  : this._title = title,
-        this._environment = environment;
+    required Config config,
+  }) : _config = config;
 
   Future<void> run() async {
     runZonedGuarded(() async {
       FlutterError.onError = _onFlutterError;
-      await _init();
-      runApp(_createApp());
+      var deps = await _init();
+      runApp(_createApp(deps));
     }, _onDartError);
   }
 
-  Future<void> _init() async {
+  Future<DI> _init() async {
     WidgetsFlutterBinding.ensureInitialized();
+    initTheme();
+    await initFirebase();
+    return initDeps();
   }
 
-  Widget _createApp() {
-    var di = DI();
+  void initTheme() {
+    AppTheme.setTheme(DarkBlueTheme.theme());
+  }
+
+  Future<void> initFirebase() async {
+    await FirebaseAdmin.init(
+      useEmulator: _config.firebase.useEmulator,
+      port: _config.firebase.emulatorPort,
+    );
+  }
+
+  Future<DI> initDeps() async {
+    var deps = DI();
+    return deps;
+  }
+
+  Widget _createApp(DI deps) {
     return MultiProvider(
       providers: [
-        Provider.value(value: BlocFactory(di.blocCreators)),
-        Provider.value(value: di.logger),
+        Provider.value(value: BlocFactory(deps.blocCreators)),
+        Provider.value(value: deps.logger),
       ],
-      child: AppRoot(_title),
+      child: AppRoot(_config.appTitle),
     );
   }
 
   void _onDartError(Object error, StackTrace stackTrace) {
-    if (isDevelopment) {
+    if (_config.isDevelopment) {
       print(error);
       print(stackTrace);
     } else {
@@ -56,7 +69,7 @@ class App {
   }
 
   void _onFlutterError(FlutterErrorDetails error) {
-    if (isDevelopment) {
+    if (_config.isDevelopment) {
       FlutterError.dumpErrorToConsole(error);
     } else {
       Zone.current.handleUncaughtError(error.exception, error.stack!);
@@ -68,7 +81,7 @@ class App {
 class AppRoot extends StatelessWidget {
   final String _title;
 
-  AppRoot(this._title);
+  const AppRoot(this._title, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +89,6 @@ class AppRoot extends StatelessWidget {
       title: _title,
       theme: AppTheme.current,
       routes: Routes.registry(),
-      home: HomeScreen(),
       localizationsDelegates: Localization.localizationsDelegates,
       supportedLocales: Localization.supportedLocales,
     );

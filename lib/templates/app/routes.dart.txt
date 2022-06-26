@@ -1,75 +1,30 @@
-import 'package:flex/exercise/categories_screen.dart';
-import 'package:flex/exercise/exercises_screen.dart';
-import 'package:flex/home/home_screen.dart';
-import 'package:flex/infrastructure/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:grumble/screens/foods_screen.dart';
+import 'package:grumble/screens/home_screen.dart';
 
 class Routes {
-  static const String HOME_ROUTE = "/home";
-  static const String CATEGORIES_ROUTE = "/categories";
-  static const String EXERCISES_ROUTE = "/exercises";
-  static const String ROUTINES_ROUTE = "/routine";
-  static const String SCHEDULE_ROUTE = "/schedule";
-  static const String WORKOUT_ROUTE = "/workout";
-  static const String SETTINGS_ROUTE = "/settings";
+  static const String homeRoute = "/";
+  static const String foodsRoute = "/foods";
 
   static Widget? homeScreen;
-  static Widget? categoriesScreen;
-  static Widget? exercisesScreen;
+  static Widget? foodsScreen;
 
   static Map<String, Widget Function(BuildContext)> registry() => {
-        HOME_ROUTE: (context) {
-          if (homeScreen == null) {
-            homeScreen = HomeScreen();
-          }
+        homeRoute: (context) {
+          homeScreen ??= const HomeScreen();
           return homeScreen!;
         },
-        CATEGORIES_ROUTE: (context) {
-          if (categoriesScreen == null) {
-            categoriesScreen = BlocProvider<CategoriesScreenBloc>(
-              bloc: context.createBloc<CategoriesScreenBloc>(),
-              child: CategoriesScreen(),
-            );
-          }
-          return categoriesScreen!;
-        },
-        EXERCISES_ROUTE: (context) {
-          if (exercisesScreen == null) {
-            exercisesScreen = BlocProvider<ExercisesScreenBloc>(
-              bloc: context.createBloc<ExercisesScreenBloc>(),
-              child: ExercisesScreen(),
-            );
-          }
-          return exercisesScreen!;
+        foodsRoute: (context) {
+          foodsScreen ??= const FoodsScreen();
+          return foodsScreen!;
         }
       };
 
   static void goToHome(BuildContext context) {
-    Navigator.pushNamed(context, HOME_ROUTE);
+    Navigator.pushNamed(context, homeRoute);
   }
 
-  static void goToCategories(BuildContext context) {
-    Navigator.pushNamed(context, CATEGORIES_ROUTE);
-  }
-
-  static void goToExercises(
-      BuildContext context, ExercisesScreenRoutingArgs args) {
-    Navigator.pushNamed(context, EXERCISES_ROUTE, arguments: args);
-  }
-
-  static void goToRoutines(BuildContext context) {
-    Navigator.pushNamed(context, ROUTINES_ROUTE);
-  }
-
-  static void goToSchedule(BuildContext context) {
-    Navigator.pushNamed(context, SCHEDULE_ROUTE);
-  }
-
-  static void goToWorkout(BuildContext context) {
-    Navigator.pushNamed(context, WORKOUT_ROUTE);
-  }
-
-  static void goToSettings(BuildContext context) {
-    Navigator.pushNamed(context, SETTINGS_ROUTE);
+  static void goToFoods(BuildContext context) {
+    Navigator.pushNamed(context, foodsRoute);
   }
 }

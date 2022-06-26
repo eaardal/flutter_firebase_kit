@@ -1,23 +1,51 @@
-import 'package:chopshop/shopping_lists/shopping_list_repository.dart';
-import 'package:chopshop/shopping_lists/shopping_lists_screen_bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_firebase_kit/infrastructure/logger.dart';
+import 'package:flutter_firebase_kit/repositories/user_repository.dart';
+import 'package:flutter_firebase_kit/screens/google_login_screen.dart';
+import 'package:flutter_firebase_kit/services/firebase.dart';
+import 'package:flutter_firebase_kit/services/google.dart';
+import 'package:flutter_firebase_kit/services/session.dart';
+import 'package:flutter_firebase_kit/widgets/authentication_boundary.dart';
+import 'package:grumble/repositories/food_repository.dart';
+import 'package:grumble/screens/foods_screen.dart';
 
 class DI {
   late Logger _logger;
   Logger get logger => _logger;
 
-  late ShoppingListRepository _shoppingListRepository;
-  ShoppingListRepository get shoppingListRepository => _shoppingListRepository;
+  late Google _google;
+  Google get google => _google;
+
+  late Firebase _firebase;
+  Firebase get firebase => _firebase;
+
+  late FirebaseFirestore _firestore;
+  FirebaseFirestore get firestore => _firestore;
+
+  late Session _session;
+  Session get session => _session;
+
+  late UserRepository _userRepository;
+  UserRepository get userRepository => _userRepository;
+
+  late FoodRepository _foodRepository;
+  FoodRepository get foodRepository => _foodRepository;
 
   Map<Type, Function> get blocCreators => {
-        ShoppingListsScreenBloc: () =>
-            ShoppingListsScreenBloc(this.shoppingListRepository),
+        AuthenticationBoundaryBloc: () => AuthenticationBoundaryBloc(session),
+        GoogleLoginScreenBloc: () => GoogleLoginScreenBloc(session),
+        FoodsScreenBloc: () => FoodsScreenBloc(_foodRepository),
         // Add more blocs here...
       };
 
   DI() {
     _logger = SimpleLogger();
-    _shoppingListRepository = ShoppingListFirestoreRepository();
+    _google = GoogleAuth(_logger);
+    _firebase = FirebaseAdmin(_logger);
+    _firestore = _firebase.firestore;
+    _userRepository = UserFirestoreRepository(_firestore);
+    _foodRepository = FoodFirestoreRepository(_firestore);
+    _session = UserSession(_google, _firebase, _logger, _userRepository);
   }
 
   DI.withMocks() {

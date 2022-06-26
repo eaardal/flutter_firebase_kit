@@ -1,0 +1,42 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_firebase_kit/infrastructure/ui.dart';
+import 'package:flutter_firebase_kit/widgets/materialui/text/h1.dart';
+import 'package:grumble/l10n/localization.dart';
+import 'package:grumble/widgets/app_bottom_navigation_bar.dart';
+
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  int activeIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    var ui = HomeScreenUI(context);
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(ui.title),
+      ),
+      body: Container(
+        child: H1(ui.body),
+      ),
+      bottomNavigationBar: AppBottomNavigationBar.instance,
+    );
+  }
+}
+
+class HomeScreenUI extends UI {
+  late Localization loc;
+
+  HomeScreenUI(BuildContext context) {
+    loc = Localization(context);
+  }
+
+  String get title => loc.homeScreen_title;
+
+  String get body => loc.homeScreen_body;
+}

@@ -1,0 +1,15 @@
+{
+  "homeScreen_title": "Home",
+  "@homeScreen_title": {
+    "description": "The main window title for the Home screen",
+    "type": "text",
+    "placeholders": {}
+  },
+
+  "homeScreen_body": "This is the home screen",
+  "@homeScreen_body": {
+    "description": "The body text content of the home screen",
+    "type": "text",
+    "placeholders": {}
+  }
+}
